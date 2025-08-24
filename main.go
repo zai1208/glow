@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"regexp"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/charmbracelet/glamour"
@@ -25,6 +26,9 @@ import (
 	"github.com/spf13/viper"
 	"golang.org/x/term"
 )
+
+// Highlight wikilinks like [[Note Title]] with ANSI color
+var wikilinkRe = regexp.MustCompile(`\[\[([^\[\]]+)\]\]`)
 
 var (
 	// Version as provided by goreleaser.
@@ -271,6 +275,7 @@ func executeArg(cmd *cobra.Command, arg string, w io.Writer) error {
 }
 
 func executeCLI(cmd *cobra.Command, src *source, w io.Writer) error {
+	
 	b, err := io.ReadAll(src.reader)
 	if err != nil {
 		return fmt.Errorf("unable to read from reader: %w", err)
